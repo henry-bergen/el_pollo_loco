@@ -3,38 +3,45 @@ class World {
   enemies = [new Chicken(), new Chicken(), new Chicken()];
   clouds = [new Cloud()];
   backgroundObjects = [
-    new BackgroundObject("img/5_background/layers/3_third_layer/1.png"),
+    new BackgroundObject("img/5_background/layers/air.png", 0),
+    new BackgroundObject("img/5_background/layers/3_third_layer/1.png", 0),
+    new BackgroundObject("img/5_background/layers/2_second_layer/1.png", 0),
+    new BackgroundObject("img/5_background/layers/1_first_layer/1.png", 0),
   ];
   canvas;
   ctx;
+  keyboard;
 
-  constructor(canvas) {
+  constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas;
+    this.keyboard = keyboard;
     this.draw();
+    this.setWorld();
+  }
+
+  setWorld() {
+    this.character.world = this;
   }
 
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+    this.addObjectsToMap(this.backgroundObjects);
+    this.addObjectsToMap(this.clouds);
     this.addToMap(this.character);
-
-    this.enemies.forEach((enemy) => {
-      this.addToMap(enemy);
-    });
-
-    this.clouds.forEach((cloud) => {
-      this.addToMap(cloud);
-    });
-
-    this.backgroundObjects.forEach((backgroundObject) => {
-      this.addToMap(backgroundObject);
-    });
+    this.addObjectsToMap(this.enemies);
 
     let self = this;
     requestAnimationFrame(function () {
-      // Die Funktion wird immer und immer wieder aufgerufen
+      // Die draw-Funktion wird durch die requestAnimationFrame-Klammer so oft und schnell pro Sekunde neu aufgerufen, dass es für das menschliche Auge nicht sichtbar ist.
       self.draw();
+    });
+  }
+
+  addObjectsToMap(objects) {
+    objects.forEach((object) => {
+      this.addToMap(object);
     });
   }
 
