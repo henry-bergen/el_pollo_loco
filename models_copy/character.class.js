@@ -3,6 +3,15 @@ class Character extends MovableObject {
   width = 150;
   y = 50;
   speed = 10;
+  world;
+
+  offset = {
+    top: 130,
+    right: 45,
+    bottom: 15,
+    left: 40,
+  };
+
   IMAGES_WALKING = [
     "img/2_character_pepe/2_walk/W-21.png",
     "img/2_character_pepe/2_walk/W-22.png",
@@ -11,7 +20,6 @@ class Character extends MovableObject {
     "img/2_character_pepe/2_walk/W-25.png",
     "img/2_character_pepe/2_walk/W-26.png",
   ];
-  world;
 
   IMAGES_JUMPING = [
     "img/2_character_pepe/3_jump/J-31.png",
@@ -31,6 +39,7 @@ class Character extends MovableObject {
     this.loadImages(this.IMAGES_JUMPING);
     this.applyGravity();
     this.animate();
+    this.getRealFrame();
   }
 
   animate() {

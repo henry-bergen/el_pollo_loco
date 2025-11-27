@@ -4,12 +4,19 @@ class MovableObject {
   img;
   height = 150;
   width = 100;
+
   imageChache = [];
   currentImage = 0;
+
   speed = 0.2;
   otherDirection = false;
   speedY = 0;
   acceleration = 2.5;
+
+  rX;
+  rY;
+  rW;
+  rH;
 
   applyGravity() {
     setInterval(() => {
@@ -34,11 +41,20 @@ class MovableObject {
   }
 
   drawFrame(ctx) {
-    if (this instanceof Character || this instanceof Chicken) {
+    if (
+      this instanceof Character ||
+      this instanceof Chicken ||
+      this instanceof Endboss
+    ) {
       ctx.beginPath();
       ctx.lineWidth = "3";
       ctx.strokeStyle = "blue";
-      ctx.rect(this.x, this.y, this.width, this.height);
+      ctx.rect(
+        this.x + this.offset.left,
+        this.y + this.offset.top,
+        this.width - this.offset.left - this.offset.right,
+        this.height - this.offset.top - this.offset.bottom
+      );
       ctx.stroke();
     }
   }
@@ -71,12 +87,19 @@ class MovableObject {
     this.currentImage++;
   }
 
+  getRealFrame() {
+    this.rX = this.x + this.offset.left;
+    this.rY = this.y + this.offset.top;
+    this.rW = this.width - this.offset.left - this.offset.right;
+    this.rH = this.height - this.offset.top - this.offset.bottom;
+  }
+
   isColliding(mO) {
     return (
-      this.x + this.width > mO.x &&
-      this.y + this.height > mO.y &&
-      this.x < mO.x &&
-      this.y < mO.y + mO.height
+      this.rX + this.rW > mO.rX &&
+      this.rY + this.rH > mO.rY &&
+      this.rX < mO.rX &&
+      this.rY < mO.rY + mO.rH
     );
   }
 
