@@ -1,11 +1,18 @@
 class MovableObject {
   x = 40;
   y = 280;
-  img;
   height = 150;
   width = 100;
+
+  rX;
+  rY;
+  rW;
+  rH;
+
+  img;
   imageChache = [];
   currentImage = 0;
+
   speed = 0.2;
   otherDirection = false;
   speedY = 0;

@@ -2,7 +2,17 @@ class Character extends MovableObject {
   height = 300;
   width = 150;
   y = 50;
+
+  offset = {
+    top: 130,
+    right: 45,
+    bottom: 15,
+    left: 40,
+  };
+
   speed = 10;
+  world;
+
   IMAGES_WALKING = [
     "img/2_character_pepe/2_walk/W-21.png",
     "img/2_character_pepe/2_walk/W-22.png",
@@ -11,7 +21,6 @@ class Character extends MovableObject {
     "img/2_character_pepe/2_walk/W-25.png",
     "img/2_character_pepe/2_walk/W-26.png",
   ];
-  world;
 
   IMAGES_JUMPING = [
     "img/2_character_pepe/3_jump/J-31.png",
