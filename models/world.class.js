@@ -45,6 +45,15 @@ class World {
         this.character.hit();
         this.statusBar.setPercentage(this.character.energy);
       }
+
+      // // landed on enemy from above -> enemy dies (handles stop, dead-image and removal)
+      // enemy.die();
+      // } else {
+      // // side or other collision -> only hurt the character if enemy isn't already dead
+      // if (!enemy.isDead) {
+      //   console.log("Collision with enemy! Energy =", this.character.energy);
+      //   this.character.hit();
+      //   this.statusBar.setPercentage(this.character.energy);
     });
   }
 

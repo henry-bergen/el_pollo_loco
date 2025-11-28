@@ -101,9 +101,4 @@ class MovableObject extends DrawableObject {
     timePassed = timePassed / 1000;
     return timePassed > 10;
   }
-
-  // if (character.x + character.width > chicken.x &&
-  // character.y + character.height > chicken.y &&
-  // character.x < chicken.x &&
-  // character.y < chicken.y + chicken.height)
 }
