@@ -25,7 +25,7 @@ class MovableObject extends DrawableObject {
     if (this instanceof ThrowableObject) {
       return true;
     } else {
-      return this.y < 125;
+      return this.y < 130;
     }
   }
 
@@ -66,6 +66,15 @@ class MovableObject extends DrawableObject {
     // }
   }
 
+  playAnimationOnce(images) {
+    let i = this.currentImage;
+    let path = images[i];
+    this.img = this.imageCache[path];
+    if (i < images.length) {
+      this.currentImage++;
+    }
+  }
+
   isColliding(mO) {
     this.getRealFrame();
     mO.getRealFrame();
@@ -78,7 +87,9 @@ class MovableObject extends DrawableObject {
   }
 
   hit() {
+    if (this.isHurt()) return;
     this.energy -= 5;
+    console.log("ENERGY=", this.energy);
     if (this.energy < 0) {
       this.energy = 0;
     } else {
@@ -88,7 +99,7 @@ class MovableObject extends DrawableObject {
 
   isHurt() {
     let timePassed = new Date().getTime() - this.lastHit;
-    timePassed = timePassed / 1000;
+    timePassed = timePassed / 100;
     return timePassed < 1;
   }
 

@@ -19,13 +19,18 @@ class World {
 
   setWorld() {
     this.character.world = this;
+    this.level.enemies.forEach((enemy) => {
+      enemy.world = this;
+    });
   }
 
   run() {
     setInterval(() => {
       this.checkThrowObjects();
+    }, 100);
+    setInterval(() => {
       this.checkCollisions();
-    }, 200);
+    }, 1);
   }
 
   checkThrowObjects() {
@@ -35,25 +40,25 @@ class World {
         this.character.y + 100
       );
       this.throwableObjects.push(bottle);
+      this.character.lastMove = new Date().getTime();
     }
   }
 
   checkCollisions() {
     this.level.enemies.forEach((enemy) => {
       if (this.character.isColliding(enemy)) {
-        console.log("Collision with enemy! Energy =", this.character.energy);
-        this.character.hit();
-        this.statusBar.setPercentage(this.character.energy);
+        // Only Chickens/Chicks can be killed by landing on top; Endboss always deals damage
+        if (
+          (enemy instanceof Chicken || enemy instanceof Chick) &&
+          this.character.isAboveGround() &&
+          this.character.speedY < 0
+        ) {
+          enemy.die();
+        } else if (!enemy.isDead()) {
+          setTimeout(this.character.hit(), 1000);
+          this.statusBar.setPercentage(this.character.energy);
+        }
       }
-
-      // // landed on enemy from above -> enemy dies (handles stop, dead-image and removal)
-      // enemy.die();
-      // } else {
-      // // side or other collision -> only hurt the character if enemy isn't already dead
-      // if (!enemy.isDead) {
-      //   console.log("Collision with enemy! Energy =", this.character.energy);
-      //   this.character.hit();
-      //   this.statusBar.setPercentage(this.character.energy);
     });
   }
 

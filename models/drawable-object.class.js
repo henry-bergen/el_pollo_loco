@@ -21,12 +21,13 @@ class DrawableObject {
     if (
       this instanceof Character ||
       this instanceof Chicken ||
+      this instanceof Chick ||
       this instanceof Endboss ||
       this instanceof ThrowableObject
     ) {
       ctx.beginPath();
-      ctx.lineWidth = "3";
-      ctx.strokeStyle = "transparent";
+      ctx.lineWidth = "2";
+      ctx.strokeStyle = "blue";
       ctx.rect(
         this.x + this.offset.left,
         this.y + this.offset.top,
