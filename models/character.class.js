@@ -90,6 +90,11 @@ class Character extends MovableObject {
 
   animate() {
     setInterval(() => {
+      // ⛔ Bewegung komplett blockieren, wenn Charakter tot ist
+      if (this.isDead()) {
+        return;
+      }
+
       if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
         this.moveRight();
         this.otherDirection = false;
@@ -107,6 +112,7 @@ class Character extends MovableObject {
         this.jump();
         this.lastMove = new Date().getTime();
       }
+
       this.world.camera_x = -this.x + 100;
     }, 1000 / 60);
 

@@ -1,9 +1,4 @@
 class MovableObject extends DrawableObject {
-  rX;
-  rY;
-  rW;
-  rH;
-
   speed = 0.2;
   otherDirection = false;
   speedY = 0;
@@ -25,15 +20,8 @@ class MovableObject extends DrawableObject {
     if (this instanceof ThrowableObject) {
       return true;
     } else {
-      return this.y < 130;
+      return this.y < 125;
     }
-  }
-
-  getRealFrame() {
-    this.rX = this.x + this.offset.left;
-    this.rY = this.y + this.offset.top;
-    this.rW = this.width - this.offset.left - this.offset.right;
-    this.rH = this.height - this.offset.top - this.offset.bottom;
   }
 
   moveLeft() {
@@ -46,33 +34,6 @@ class MovableObject extends DrawableObject {
 
   jump() {
     this.speedY = 22;
-  }
-
-  playAnimation(images) {
-    // Wenn bereits fertig und die aktuellen Images die Dead-Animation sind:
-    // if (this.animationFinished && images === this.IMAGES_DEAD) {
-    //   return;
-    // }
-
-    let i = this.currentImage % images.length; // % = Modulo-Operator
-    // i = 0, dann 1, dann 2 ... dann 5, dann wieder 0
-    let path = images[i];
-    this.img = this.imageCache[path];
-    this.currentImage++;
-
-    // Dead-Animation soll nur einmal laufen:
-    // if (images === this.IMAGES_DEAD && this.currentImage >= images.length) {
-    //   this.animationFinished = true;
-    // }
-  }
-
-  playAnimationOnce(images) {
-    let i = this.currentImage;
-    let path = images[i];
-    this.img = this.imageCache[path];
-    if (i < images.length) {
-      this.currentImage++;
-    }
   }
 
   isColliding(mO) {

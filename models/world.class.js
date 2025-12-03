@@ -73,6 +73,13 @@ class World {
     this.ctx.translate(this.camera_x, 0);
 
     this.addObjectsToMap(this.level.clouds);
+    // draw collectable objects (coins and bottles) if they exist in the level
+    if (this.level.coins) {
+      this.addObjectsToMap(this.level.coins);
+    }
+    if (this.level.bottles) {
+      this.addObjectsToMap(this.level.bottles);
+    }
     this.addToMap(this.character);
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.throwableObjects);
