@@ -40,17 +40,6 @@ class World {
     }, 1);
   }
 
-  run() {
-    setInterval(() => {
-      this.checkThrowObjects();
-    }, 100);
-
-    setInterval(() => {
-      this.checkCollisions();
-      this.checkCollections();
-    }, 50);
-  }
-
   checkThrowObjects() {
     if (this.keyboard.G) {
       let bottle = new ThrowableObject(
@@ -73,7 +62,6 @@ class World {
           enemy.die();
         } else if (!enemy.isDead()) {
           setTimeout(this.character.hit(), 1000);
-          this.statusBar.setPercentage(this.character.energy);
         }
       }
     });

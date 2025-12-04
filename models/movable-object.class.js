@@ -50,12 +50,13 @@ class MovableObject extends DrawableObject {
   hit() {
     if (this.isHurt()) return;
     this.energy -= 5;
-    console.log("ENERGY=", this.energy);
+    this.world.statusBar.setPercentage(this.energy);
     if (this.energy < 0) {
       this.energy = 0;
     } else {
       this.lastHit = new Date().getTime();
     }
+    console.log("ENERGY=", this.energy);
   }
 
   isHurt() {
