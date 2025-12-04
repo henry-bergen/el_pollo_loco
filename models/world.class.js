@@ -22,6 +22,12 @@ class World {
     this.level.enemies.forEach((enemy) => {
       enemy.world = this;
     });
+    this.level.collectables.forEach((collectable) => {
+      collectable.world = this;
+    });
+    this.throwableObjects.forEach((t) => {
+      t.world = this;
+    });
   }
 
   run() {
@@ -30,7 +36,19 @@ class World {
     }, 100);
     setInterval(() => {
       this.checkCollisions();
+      this.checkCollections();
     }, 1);
+  }
+
+  run() {
+    setInterval(() => {
+      this.checkThrowObjects();
+    }, 100);
+
+    setInterval(() => {
+      this.checkCollisions();
+      this.checkCollections();
+    }, 50);
   }
 
   checkThrowObjects() {
@@ -47,7 +65,6 @@ class World {
   checkCollisions() {
     this.level.enemies.forEach((enemy) => {
       if (this.character.isColliding(enemy)) {
-        // Only Chickens/Chicks can be killed by landing on top; Endboss always deals damage
         if (
           (enemy instanceof Chicken || enemy instanceof Chick) &&
           this.character.isAboveGround() &&
@@ -57,6 +74,19 @@ class World {
         } else if (!enemy.isDead()) {
           setTimeout(this.character.hit(), 1000);
           this.statusBar.setPercentage(this.character.energy);
+        }
+      }
+    });
+  }
+
+  checkCollections() {
+    this.level.collectables.forEach((collectable, index) => {
+      if (this.character.isColliding(collectable)) {
+        if (collectable instanceof Coin) {
+          this.level.collectables.splice(index, 1);
+        }
+        if (collectable instanceof Bottle) {
+          this.level.collectables.splice(index, 1);
         }
       }
     });
@@ -73,13 +103,7 @@ class World {
     this.ctx.translate(this.camera_x, 0);
 
     this.addObjectsToMap(this.level.clouds);
-    // draw collectable objects (coins and bottles) if they exist in the level
-    if (this.level.coins) {
-      this.addObjectsToMap(this.level.coins);
-    }
-    if (this.level.bottles) {
-      this.addObjectsToMap(this.level.bottles);
-    }
+    this.addObjectsToMap(this.level.collectables);
     this.addToMap(this.character);
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.throwableObjects);

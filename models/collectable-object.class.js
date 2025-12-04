@@ -9,9 +9,24 @@ class CollectableObject extends DrawableObject {
     left: 5,
   };
 
+  collected = false;
+
   constructor(imagePath) {
-    super().loadImage(imagePath);
+    super();
+    this.loadImage(imagePath);
     this.x = 200 + Math.random() * 2500;
     this.y = 400;
+  }
+
+  collect() {
+    if (!this.collected) {
+      this.collected = true;
+      this.animationFinished = true;
+      this.loadImage(this.img.src);
+    }
+  }
+
+  isCollected() {
+    return this.collected;
   }
 }
