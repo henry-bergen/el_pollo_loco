@@ -1,6 +1,6 @@
 class Coin extends CollectableObject {
-  height = 55;
-  width = 55;
+  height = 75;
+  width = 75;
 
   offset = {
     top: 15,
@@ -14,7 +14,7 @@ class Coin extends CollectableObject {
   constructor(imagePath) {
     super(imagePath);
     this.loadImages(this.IMAGES_PULSE);
-    this.x = 100 + Math.random() * 2000;
+    this.x = 200 + Math.random() * 2500;
     this.y = 150 + Math.random() * 175;
     this.animate();
   }

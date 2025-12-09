@@ -6,6 +6,9 @@ class World {
   keyboard;
   camera_x = 0;
   statusBar = new StatusBar();
+  coinBar = new CoinBar();
+  bottleBar = new BottleBar();
+  EndbossBar = new EndbossBar();
   throwableObjects = [];
 
   constructor(canvas, keyboard) {
@@ -19,12 +22,19 @@ class World {
 
   setWorld() {
     this.character.world = this;
+
     this.level.enemies.forEach((enemy) => {
       enemy.world = this;
     });
-    this.level.collectables.forEach((collectable) => {
-      collectable.world = this;
+
+    this.level.coins.forEach((coin) => {
+      coin.world = this;
     });
+
+    this.level.bottles.forEach((bottle) => {
+      bottle.world = this;
+    });
+
     this.throwableObjects.forEach((t) => {
       t.world = this;
     });
@@ -37,17 +47,26 @@ class World {
     setInterval(() => {
       this.checkCollisions();
       this.checkCollections();
+      // this.checkBottleHits();
+      this.checkEndbossBottleHits();
     }, 1);
   }
 
   checkThrowObjects() {
-    if (this.keyboard.G) {
+    if (this.keyboard.G && this.bottleBar.counter > 0) {
+      let spawnX = this.character.otherDirection
+        ? this.character.x - 1
+        : this.character.x + 100;
       let bottle = new ThrowableObject(
-        this.character.x + 100,
-        this.character.y + 100
+        spawnX,
+        this.character.y + 100,
+        this.character.otherDirection
       );
+      bottle.world = this;
       this.throwableObjects.push(bottle);
+      this.bottleBar.setCounter(this.bottleBar.counter - 1);
       this.character.lastMove = new Date().getTime();
+      this.keyboard.G = false;
     }
   }
 
@@ -61,21 +80,54 @@ class World {
         ) {
           enemy.die();
         } else if (!enemy.isDead()) {
-          setTimeout(this.character.hit(), 1000);
+          this.character.hit();
+          this.statusBar.setPercentage(this.character.energy);
         }
       }
     });
   }
 
   checkCollections() {
-    this.level.collectables.forEach((collectable, index) => {
-      if (this.character.isColliding(collectable)) {
-        if (collectable instanceof Coin) {
-          this.level.collectables.splice(index, 1);
-        }
-        if (collectable instanceof Bottle) {
-          this.level.collectables.splice(index, 1);
-        }
+    this.level.coins.forEach((coin, index) => {
+      if (this.character.isColliding(coin)) {
+        this.level.coins.splice(index, 1);
+        this.coinBar.setCounter(this.coinBar.counter + 1);
+      }
+    });
+
+    this.level.bottles.forEach((bottle, index) => {
+      if (this.character.isColliding(bottle)) {
+        this.level.bottles.splice(index, 1);
+        this.bottleBar.setCounter(this.bottleBar.counter + 1);
+      }
+    });
+  }
+
+  // // FUNKTIONIERT NOCH NICHT:
+  // checkBottleHits() {
+  //   this.throwableObjects.forEach((bottle) => {
+  //     this.level.enemies.forEach((enemy) => {
+  //       // Treffer nur bei lebenden Gegnern
+  //       if (!enemy.isDead() && bottle.isColliding(enemy)) {
+  //         // Gegner stirbt (Chicken oder Chick)
+  //         if (
+  //           !enemy.isDead() &&
+  //           bottle.isColliding(enemy) &&
+  //           (enemy instanceof Chicken || enemy instanceof Chick)
+  //         ) {
+  //           enemy.die();
+  //         }
+  //       }
+  //     });
+  //   });
+  // }
+
+  checkEndbossBottleHits() {
+    this.throwableObjects.forEach((bottle) => {
+      if (bottle.isColliding(this.level.endboss)) {
+        // Endboss takes damage but doesn't die instantly
+        this.level.endboss.hit(20);
+        this.EndbossBar.setPercentage(this.level.endboss.energy);
       }
     });
   }
@@ -85,15 +137,19 @@ class World {
 
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgroundObjects);
+    this.addObjectsToMap(this.level.clouds);
 
     this.ctx.translate(-this.camera_x, 0);
     this.addToMap(this.statusBar);
+    this.addToMap(this.coinBar);
+    this.addToMap(this.bottleBar);
+    this.addToMap(this.EndbossBar);
     this.ctx.translate(this.camera_x, 0);
 
-    this.addObjectsToMap(this.level.clouds);
-    this.addObjectsToMap(this.level.collectables);
+    this.addObjectsToMap(this.level.coins);
     this.addToMap(this.character);
     this.addObjectsToMap(this.level.enemies);
+    this.addObjectsToMap(this.level.bottles);
     this.addObjectsToMap(this.throwableObjects);
 
     this.ctx.translate(-this.camera_x, 0);

@@ -54,6 +54,6 @@ class Chick extends MovableObject {
         let i = this.world.level.enemies.indexOf(this);
         if (i !== -1) this.world.level.enemies.splice(i, 1);
       }
-    }, 2000);
+    }, 300);
   }
 }

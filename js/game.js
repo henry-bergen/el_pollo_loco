@@ -5,8 +5,6 @@ let keyboard = new Keyboard();
 function init() {
   canvas = document.getElementById("canvas");
   world = new World(canvas, keyboard);
-
-  console.log("My Character is", world.character);
 }
 
 window.addEventListener("keydown", (event) => {
@@ -25,7 +23,7 @@ window.addEventListener("keydown", (event) => {
   if (event.keyCode == 32) {
     keyboard.SPACE = true;
   }
-  if (event.keyCode == 71) {
+  if (event.key === "g" && !event.repeat) {
     keyboard.G = true;
   }
 });

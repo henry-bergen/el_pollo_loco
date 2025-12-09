@@ -14,19 +14,19 @@ class CollectableObject extends DrawableObject {
   constructor(imagePath) {
     super();
     this.loadImage(imagePath);
-    this.x = 200 + Math.random() * 2500;
+    this.x = 250 + Math.random() * 2500;
     this.y = 400;
   }
 
-  collect() {
-    if (!this.collected) {
-      this.collected = true;
-      this.animationFinished = true;
-      this.loadImage(this.img.src);
-    }
-  }
+  //   collect() {
+  //     if (!this.collected) {
+  //       this.collected = true;
+  //       this.animationFinished = true;
+  //       this.loadImage(this.img.src);
+  //     }
+  //   }
 
-  isCollected() {
-    return this.collected;
-  }
+  //   isCollected() {
+  //     return this.collected;
+  //   }
 }

@@ -1,14 +1,20 @@
 class Level {
-  collectables;
+  coins;
+  bottles;
   enemies;
   clouds;
   backgroundObjects;
-  level_end_x = 2250;
+  endboss;
 
-  constructor(collectables, enemies, clouds, backgroundObjects) {
-    this.collectables = collectables;
+  level_end_x = 2500;
+
+  constructor(coins, bottles, enemies, clouds, backgroundObjects) {
+    this.coins = coins;
+    this.bottles = bottles;
     this.enemies = enemies;
     this.clouds = clouds;
     this.backgroundObjects = backgroundObjects;
+    // extract endboss from enemies for easy access
+    this.endboss = enemies.find((enemy) => enemy instanceof Endboss);
   }
 }

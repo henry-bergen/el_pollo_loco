@@ -26,14 +26,17 @@ class MovableObject extends DrawableObject {
 
   moveLeft() {
     this.x -= this.speed;
+    this.lastMove = new Date().getTime();
   }
 
   moveRight() {
     this.x += this.speed;
+    this.lastMove = new Date().getTime();
   }
 
   jump() {
     this.speedY = 22;
+    this.lastMove = new Date().getTime();
   }
 
   isColliding(mO) {
@@ -47,10 +50,9 @@ class MovableObject extends DrawableObject {
     );
   }
 
-  hit() {
+  hit(damage = 5) {
     if (this.isHurt()) return;
-    this.energy -= 5;
-    this.world.statusBar.setPercentage(this.energy);
+    this.energy -= damage;
     if (this.energy < 0) {
       this.energy = 0;
     } else {
