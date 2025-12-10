@@ -103,31 +103,14 @@ class World {
     });
   }
 
-  // // FUNKTIONIERT NOCH NICHT:
-  // checkBottleHits() {
-  //   this.throwableObjects.forEach((bottle) => {
-  //     this.level.enemies.forEach((enemy) => {
-  //       // Treffer nur bei lebenden Gegnern
-  //       if (!enemy.isDead() && bottle.isColliding(enemy)) {
-  //         // Gegner stirbt (Chicken oder Chick)
-  //         if (
-  //           !enemy.isDead() &&
-  //           bottle.isColliding(enemy) &&
-  //           (enemy instanceof Chicken || enemy instanceof Chick)
-  //         ) {
-  //           enemy.die();
-  //         }
-  //       }
-  //     });
-  //   });
-  // }
-
   checkEndbossBottleHits() {
-    this.throwableObjects.forEach((bottle) => {
+    this.throwableObjects.forEach((bottle, index) => {
       if (bottle.isColliding(this.level.endboss)) {
-        // Endboss takes damage but doesn't die instantly
         this.level.endboss.hit(20);
         this.EndbossBar.setPercentage(this.level.endboss.energy);
+
+        // WICHTIG!!
+        this.throwableObjects.splice(index, 1);
       }
     });
   }
@@ -143,7 +126,10 @@ class World {
     this.addToMap(this.statusBar);
     this.addToMap(this.coinBar);
     this.addToMap(this.bottleBar);
-    this.addToMap(this.EndbossBar);
+    // Only show EndbossBar when endboss is close enough
+    if (Math.abs(this.level.endboss.x - this.character.x) < 600) {
+      this.addToMap(this.EndbossBar);
+    }
     this.ctx.translate(this.camera_x, 0);
 
     this.addObjectsToMap(this.level.coins);

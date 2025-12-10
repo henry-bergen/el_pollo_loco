@@ -49,7 +49,7 @@ class DrawableObject {
     ) {
       ctx.beginPath();
       ctx.lineWidth = "2";
-      ctx.strokeStyle = "transparent";
+      ctx.strokeStyle = "blue";
       ctx.rect(
         this.x + this.offset.left,
         this.y + this.offset.top,

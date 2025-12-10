@@ -3,17 +3,17 @@ class Endboss extends MovableObject {
   width = 250;
   y = 50;
 
-  state = "idle";
+  state = "alert";
   // idle: nur Bild
   // walking: läuft mit Walking-Animation
   // alert: steht und spielt Alert
   // attack: läuft mit Attack-Animation
 
   offset = {
-    top: 100,
-    right: 35,
+    top: 70,
+    right: 50,
     bottom: 75,
-    left: 50,
+    left: 25,
   };
 
   IMAGES_WALKING = [
@@ -65,54 +65,85 @@ class Endboss extends MovableObject {
     this.loadImages(this.IMAGES_HURT);
     this.loadImages(this.IMAGES_DEAD);
     this.x = 2500;
-    this.speed = 1;
+    this.speed = 2.5;
     this.energy = 100;
     this.animate();
   }
 
   animate() {
-    // Haupt-Logik
+    this.alertPlayed = false;
+    this.alertActive = false;
+    this.activated = false; // 🆕 NEU: wurde der Boss schon ausgelöst?
+
     setInterval(() => {
       if (!this.world) return;
-      let dist = Math.abs(this.x - this.world.character.x);
 
-      switch (this.state) {
-        case "idle":
-          if (dist < 600) {
-            this.state = "walking";
-          }
-          break;
+      let char = this.world.character;
+      let dist = Math.abs(this.x - char.x);
+      let touchingCharacter = this.isColliding(char);
 
-        case "walking":
-          if (dist < 300) {
-            this.state = "alert";
-            this.alertStartTime = Date.now();
-          } else {
-            // 🆕 Bewegung nur wenn keine Berührung
-            if (this.x > this.world.character.x) this.moveLeft();
-          }
-          break;
-
-        case "alert":
-          const alertDuration = this.IMAGES_ALERT.length * 150;
-          if (Date.now() - this.alertStartTime > alertDuration) {
-            this.state = "attack";
-          }
-          break;
-
-        case "attack":
-          // 🆕 Bewegung nur wenn keine Berührung
-          if (this.x > this.world.character.x) this.moveLeft();
-          break;
+      // ---------- DEAD ----------
+      if (this.energy <= 0) {
+        this.state = "dead";
+        return;
       }
+
+      // ---------- HURT ----------
+      if (this.isHurt()) {
+        this.state = "hurt";
+
+        // // Hurt bewegt sich weiter (außer Attack / Dead / Alert)
+        // if (!touchingCharacter && !this.alertActive) {
+        this.moveLeft();
+        // }
+        return;
+      }
+
+      // ---------- ATTACK ----------
+      if (touchingCharacter) {
+        this.state = "attack";
+        return; // keine Bewegung
+      }
+
+      // ---------- AKTIVIERUNG (<600px) ----------
+      if (!this.activated && dist < 600) {
+        this.activated = true; // 🆕 Nur EINMAL
+      }
+
+      // ---------- ALERT (einmalig, <300px) ----------
+      if (this.activated && !this.alertPlayed && dist < 250) {
+        this.state = "alert";
+        this.alertPlayed = true;
+        this.alertActive = true;
+
+        const alertDuration = this.IMAGES_ALERT.length * 250;
+        setTimeout(() => {
+          this.alertActive = false;
+        }, alertDuration);
+
+        return;
+      }
+
+      // Alert blockiert Bewegung
+      if (this.alertActive) {
+        this.state = "alert";
+        return;
+      }
+
+      // ---------- WALKING + Bewegung, wenn aktiviert ----------
+      if (this.activated) {
+        this.state = "walking";
+        this.moveLeft();
+        return;
+      }
+
+      // ---------- STANDARD WALKING ohne Bewegung ----------
+      this.state = "walking";
     }, 1000 / 60);
 
-    // Animationssteuerung
+    // ==================== ANIMATIONEN ====================
     setInterval(() => {
       switch (this.state) {
-        case "idle":
-          this.loadImage(this.IMAGES_WALKING[0]);
-          break;
         case "walking":
           this.playAnimation(this.IMAGES_WALKING);
           break;
@@ -145,13 +176,13 @@ class Endboss extends MovableObject {
 
       // remove endboss from level and clear reference after short delay
       setTimeout(() => {
-        if (this.world && this.world.level && this.world.level.enemies) {
-          let i = this.world.level.enemies.indexOf(this);
-          if (i !== -1) this.world.level.enemies.splice(i, 1);
-        }
-        if (this.world && this.world.level) {
-          this.world.level.endboss = null;
-        }
+        // if (this.world && this.world.level && this.world.level.enemies) {
+        let i = this.world.level.enemies.indexOf(this);
+        if (i !== -1) this.world.level.enemies.splice(i, 1);
+        // }
+        // if (this.world && this.world.level) {
+        this.world.level.endboss = null;
+        // }
       }, 1000);
     } else {
       this.state = "hurt";

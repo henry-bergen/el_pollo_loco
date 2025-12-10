@@ -23,7 +23,7 @@ window.addEventListener("keydown", (event) => {
   if (event.keyCode == 32) {
     keyboard.SPACE = true;
   }
-  if (event.key === "g" && !event.repeat) {
+  if (event.keyCode === 71 && !event.repeat) {
     keyboard.G = true;
   }
 });
